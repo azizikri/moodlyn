@@ -185,36 +185,36 @@
 
             <div class="space-y-6">
                 <div class="bg-white/50 rounded-2xl p-6">
-                    <h3 class="text-xl font-semibold text-[#8B6F47] mb-3">Apakah data saya aman?</h3>
+                    <h3 class="text-xl font-semibold text-[#8B6F47] mb-3">
+                        Apa itu Moodly?</h3>
                     <p class="text-[#7A8471]">
-                        Ya, semua data Anda dienkripsi dan disimpan dengan aman. Kami sangat menjaga privasi dan
-                        keamanan informasi pribadi Anda.
+                        Moodlyn adalah platform self-care berbasis web yang membantu kamu melacak suasana hati, menulis
+                        jurnal harian, dan mendapatkan kutipan motivasi untuk menjaga kesehatan mental.
                     </p>
                 </div>
 
                 <div class="bg-white/50 rounded-2xl p-6">
-                    <h3 class="text-xl font-semibold text-[#8B6F47] mb-3">Bisakah saya menggunakan Moodlyn secara
-                        gratis?</h3>
+                    <h3 class="text-xl font-semibold text-[#8B6F47] mb-3">Apakah ada biaya untuk menggunakan Moodlyn?
+                    </h3>
                     <p class="text-[#7A8471]">
-                        Ya, Moodlyn dapat digunakan secara gratis dengan semua fitur dasar termasuk mood tracking,
-                        journaling, dan motivational quotes.
+                        Saat ini, Moodlyn dapat digunakan secara gratis.
                     </p>
                 </div>
 
                 <div class="bg-white/50 rounded-2xl p-6">
-                    <h3 class="text-xl font-semibold text-[#8B6F47] mb-3">Bagaimana cara melihat riwayat mood dan jurnal
-                        saya?</h3>
+                    <h3 class="text-xl font-semibold text-[#8B6F47] mb-3">Siapa yang bisa menggunakan Moodlyn?</h3>
                     <p class="text-[#7A8471]">
-                        Anda dapat mengakses semua riwayat mood dan jurnal Anda melalui halaman History di dashboard.
-                        Klik pada entri mana pun untuk melihat detail lengkapnya.
+                        Moodlyn dirancang khusus untuk mahasiswa, tapi siapa saja yang ingin memantau dan mengelola
+                        kondisi emosionalnya bisa menggunakannya.
                     </p>
                 </div>
 
                 <div class="bg-white/50 rounded-2xl p-6">
-                    <h3 class="text-xl font-semibold text-[#8B6F47] mb-3">Apakah saya bisa mengedit profil saya?</h3>
+                    <h3 class="text-xl font-semibold text-[#8B6F47] mb-3">Bagaimana cara menggunakan fitur Mood
+                        Tracker?</h3>
                     <p class="text-[#7A8471]">
-                        Tentu saja! Anda dapat mengubah nama tampilan dan password melalui halaman Edit Profile yang
-                        dapat diakses dari menu pengaturan.
+                        Kamu cukup pilih suasana hati hari ini dan tulis alasan mengapa kamu merasa seperti itu. Moodlyn
+                        akan membantu kamu memantau perubahan suasana hati setiap harinya.
                     </p>
                 </div>
             </div>
