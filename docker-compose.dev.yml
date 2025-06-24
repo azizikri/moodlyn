@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  app:
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+    volumes:
+      - .:/var/www/html
+      - /var/www/html/vendor
+      - /var/www/html/node_modules
+    command: >
+      sh -c "composer install &&
+             npm install &&
+             npm run dev &
+             apache2-foreground"
