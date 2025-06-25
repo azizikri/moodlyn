@@ -184,7 +184,7 @@
                         <div class="text-4xl mb-4">📖</div>
                         <h4 class="text-lg font-semibold text-[#8B6F47] mb-2">Belum Ada Entri</h4>
                         <p class="text-[#7A8471] mb-4">Mulai perjalanan self-care Anda hari ini!</p>
-                        <div class="space-x-4">
+                        <div class="flex justify-center space-x-4 mt-4">
                             <a href="/mood-tracker"
                                 class="inline-block px-4 py-2 bg-[#B5936B] hover:bg-[#8B6F47] text-white rounded-lg font-medium transition-colors">
                                 Catat Mood

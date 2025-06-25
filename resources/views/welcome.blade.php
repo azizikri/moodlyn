@@ -186,7 +186,7 @@
             <div class="space-y-6">
                 <div class="bg-white/50 rounded-2xl p-6">
                     <h3 class="text-xl font-semibold text-[#8B6F47] mb-3">
-                        Apa itu Moodly?</h3>
+                        Apa itu Moodlyn?</h3>
                     <p class="text-[#7A8471]">
                         Moodlyn adalah platform self-care berbasis web yang membantu kamu melacak suasana hati, menulis
                         jurnal harian, dan mendapatkan kutipan motivasi untuk menjaga kesehatan mental.
