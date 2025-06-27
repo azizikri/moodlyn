@@ -18,6 +18,11 @@ services:
             - APP_URL=http://localhost:80
             - DB_CONNECTION=sqlite
             - DB_DATABASE=/var/www/html/database/database.sqlite
+            - SESSION_DRIVER=database
+            - SESSION_LIFETIME=2880
+            - SESSION_EXPIRE_ON_CLOSE=false
+            - SESSION_SECURE_COOKIE=false
+            - SESSION_SAME_SITE=lax
         networks:
             - moodlyn-network
 networks:

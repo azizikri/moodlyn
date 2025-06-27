@@ -26,7 +26,28 @@
             </div>
         </div>
     </div>
+    @livewireScripts
     @fluxScripts
+
+    <script>
+        // Handle Livewire session expiry
+        document.addEventListener('livewire:navigated', () => {
+            // Refresh CSRF token on navigation
+            const token = document.querySelector('meta[name="csrf-token"]');
+            if (token) {
+                window.livewire.getCsrfToken = () => token.getAttribute('content');
+            }
+        });
+
+        // Handle expired session errors
+        window.addEventListener('livewire:error', (event) => {
+            if (event.detail.status === 419) {
+                // Session expired - show user-friendly message and refresh
+                alert('Your session has expired. The page will refresh automatically.');
+                window.location.reload();
+            }
+        });
+    </script>
 </body>
 
 </html>

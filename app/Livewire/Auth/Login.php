@@ -28,22 +28,28 @@ class Login extends Component
      */
     public function login(): void
     {
-        $this->validate();
+        try {
+            $this->validate();
 
-        $this->ensureIsNotRateLimited();
+            $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
-            RateLimiter::hit($this->throttleKey());
+            if (! Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
+                RateLimiter::hit($this->throttleKey());
 
-            throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
-            ]);
+                throw ValidationException::withMessages([
+                    'email' => __('auth.failed'),
+                ]);
+            }
+
+            RateLimiter::clear($this->throttleKey());
+            Session::regenerate();
+
+            $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+        } catch (\Illuminate\Session\TokenMismatchException $e) {
+            // Handle CSRF token mismatch
+            session()->flash('error', 'Your session has expired. Please try again.');
+            $this->redirect(route('login'), navigate: true);
         }
-
-        RateLimiter::clear($this->throttleKey());
-        Session::regenerate();
-
-        $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
     }
 
     /**

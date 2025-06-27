@@ -4,6 +4,13 @@
     <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />
 
+    <!-- Session Error -->
+    @if (session('error'))
+        <div class="p-4 bg-red-50 border border-red-200 rounded-xl">
+            <p class="text-sm text-red-600 text-center">{{ session('error') }}</p>
+        </div>
+    @endif
+
     <form wire:submit="login" class="flex flex-col gap-5">
         <!-- Email Address -->
         <div class="space-y-2">
