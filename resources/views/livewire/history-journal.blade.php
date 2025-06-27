@@ -9,7 +9,7 @@
     <div class="mb-8 flex flex-wrap items-center gap-4 justify-center">
         <div class="flex items-center space-x-2">
             <label for="filter-month" class="text-[#8B6F47] font-medium">Bulan:</label>
-            <select wire:model="filterMonth" id="filter-month"
+            <select wire:model.live="filterMonth" id="filter-month"
                 class="p-2 border-2 border-[#E8C4A0] rounded-lg focus:border-[#B5936B] focus:outline-none">
                 <option value="">Semua Bulan</option>
                 <option value="01">Januari</option>
@@ -29,7 +29,7 @@
 
         <div class="flex items-center space-x-2">
             <label for="filter-year" class="text-[#8B6F47] font-medium">Tahun:</label>
-            <select wire:model="filterYear" id="filter-year"
+            <select wire:model.live="filterYear" id="filter-year"
                 class="p-2 border-2 border-[#E8C4A0] rounded-lg focus:border-[#B5936B] focus:outline-none">
                 <option value="">Semua Tahun</option>
                 @for ($year = now()->year; $year >= now()->year - 5; $year--)
@@ -37,10 +37,31 @@
                 @endfor
             </select>
         </div>
+
+        @if ($filterMonth || $filterYear)
+            <button wire:click="$set('filterMonth', ''); $set('filterYear', '')"
+                class="px-4 py-2 text-sm bg-[#B5936B] hover:bg-[#8B6F47] text-white rounded-lg font-medium transition-colors">
+                Reset Filter
+            </button>
+        @endif
     </div>
 
     <!-- Entries List -->
-    <div class="space-y-6">
+    <div class="space-y-6" wire:loading.class="opacity-50" wire:target="filterMonth,filterYear">
+        <div wire:loading wire:target="filterMonth,filterYear" class="text-center py-4">
+            <div
+                class="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-[#8B6F47] bg-white/70 transition ease-in-out duration-150">
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-[#8B6F47]" xmlns="http://www.w3.org/2000/svg"
+                    fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                        stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                    </path>
+                </svg>
+                Memuat data...
+            </div>
+        </div>
         @forelse ($entries as $entry)
             <div class="bg-white/70 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow border border-[#E8C4A0]">
                 <div class="flex items-start justify-between">

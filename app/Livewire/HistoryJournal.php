@@ -19,8 +19,9 @@ class HistoryJournal extends Component
 
     public function mount()
     {
-        $this->filterMonth = now()->format('m');
-        $this->filterYear = now()->format('Y');
+        // Let filters start empty to show all entries by default
+        $this->filterMonth = '';
+        $this->filterYear = '';
     }
 
     public function updatingFilterMonth()
@@ -35,8 +36,6 @@ class HistoryJournal extends Component
 
     public function getEntriesProperty()
     {
-        $query = collect();
-
         // Get mood entries
         $moodEntries = MoodEntry::where('user_id', auth()->id())
             ->when($this->filterMonth, function ($q) {
@@ -81,8 +80,7 @@ class HistoryJournal extends Component
             });
 
         // Combine and sort by date
-        return $query->concat($moodEntries)
-            ->concat($journalEntries)
+        return $moodEntries->concat($journalEntries)
             ->sortByDesc(function ($item) {
                 return $item['date'];
             })
