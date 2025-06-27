@@ -66,6 +66,25 @@ RUN mkdir -p /var/www/html/database && \
 # Copy custom Apache configuration
 COPY docker/apache/000-default.conf /etc/apache2/sites-available/000-default.conf
 
+# Generate application key
+RUN php artisan key:generate --force
+
+# Run database migrations
+RUN php artisan migrate --force
+
+# Clear all caches
+RUN php artisan config:clear && \
+    php artisan cache:clear && \
+    php artisan route:clear && \
+    php artisan view:clear
+
+# Set final permissions
+RUN chown -R www-data:www-data /var/www/html && \
+    chmod -R 755 /var/www/html && \
+    chmod -R 775 /var/www/html/storage && \
+    chmod -R 775 /var/www/html/database && \
+    chmod -R 775 /var/www/html/bootstrap/cache
+
 # Expose port 80
 EXPOSE 80
 
