@@ -58,6 +58,11 @@ RUN chown -R www-data:www-data /var/www/html/storage \
 RUN chmod -R 775 /var/www/html/storage \
     /var/www/html/bootstrap/cache
 
+RUN mkdir -p /var/www/html/database && \
+    touch /var/www/html/database/database.sqlite && \
+    chown -R www-data:www-data /var/www/html/database && \
+    chmod -R 775 /var/www/html/database
+
 # Copy custom Apache configuration
 COPY docker/apache/000-default.conf /etc/apache2/sites-available/000-default.conf
 
