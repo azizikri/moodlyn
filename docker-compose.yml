@@ -8,9 +8,11 @@ services:
         ports:
             - "80:80"
         volumes:
-            - .:/var/www/html
+            # Mount only specific directories to avoid overwriting the database
             - ./storage:/var/www/html/storage
             - ./bootstrap/cache:/var/www/html/bootstrap/cache
+            # Create a named volume for the database to persist data
+            - database_data:/var/www/html/database
         environment:
             - APP_NAME=Moodlyn
             - APP_ENV=production
@@ -26,6 +28,11 @@ services:
             - SESSION_DOMAIN=localhost:80
         networks:
             - moodlyn-network
+
+volumes:
+    database_data:
+        driver: local
+
 networks:
     moodlyn-network:
         driver: bridge

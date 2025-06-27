@@ -9,8 +9,23 @@ services:
       - .:/var/www/html
       - /var/www/html/vendor
       - /var/www/html/node_modules
+      # Use a named volume for database in development too
+      - database_data:/var/www/html/database
     command: >
-      sh -c "composer install &&
+      sh -c "# Ensure proper permissions for development
+             chown -R www-data:www-data /var/www/html/storage /var/www/html/database /var/www/html/bootstrap/cache
+             chmod -R 775 /var/www/html/storage /var/www/html/database /var/www/html/bootstrap/cache
+             if [ -f /var/www/html/database/database.sqlite ]; then
+                 chmod 664 /var/www/html/database/database.sqlite
+             fi
+             composer install &&
              npm install &&
+             php artisan key:generate &&
+             php artisan migrate --force &&
+             php artisan db:seed --force &&
              npm run dev &
              apache2-foreground"
+
+volumes:
+  database_data:
+    driver: local

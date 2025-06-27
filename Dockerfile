@@ -58,10 +58,12 @@ RUN chown -R www-data:www-data /var/www/html/storage \
 RUN chmod -R 775 /var/www/html/storage \
     /var/www/html/bootstrap/cache
 
+# Create database directory and file with proper permissions
 RUN mkdir -p /var/www/html/database && \
     touch /var/www/html/database/database.sqlite && \
     chown -R www-data:www-data /var/www/html/database && \
-    chmod -R 775 /var/www/html/database
+    chmod -R 775 /var/www/html/database && \
+    chmod 664 /var/www/html/database/database.sqlite
 
 # Copy custom Apache configuration
 COPY docker/apache/000-default.conf /etc/apache2/sites-available/000-default.conf
@@ -71,6 +73,9 @@ RUN php artisan key:generate --force
 
 # Run database migrations
 RUN php artisan migrate --force
+
+# Run database seeding
+RUN php artisan db:seed --force
 
 # Clear all caches
 RUN php artisan config:clear && \
@@ -83,10 +88,24 @@ RUN chown -R www-data:www-data /var/www/html && \
     chmod -R 755 /var/www/html && \
     chmod -R 775 /var/www/html/storage && \
     chmod -R 775 /var/www/html/database && \
+    chmod 664 /var/www/html/database/database.sqlite && \
     chmod -R 775 /var/www/html/bootstrap/cache
+
+# Create an entrypoint script to handle permissions at runtime
+RUN echo '#!/bin/bash\n\
+# Ensure proper permissions at runtime\n\
+chown -R www-data:www-data /var/www/html/storage /var/www/html/database /var/www/html/bootstrap/cache\n\
+chmod -R 775 /var/www/html/storage /var/www/html/database /var/www/html/bootstrap/cache\n\
+if [ -f /var/www/html/database/database.sqlite ]; then\n\
+    chmod 664 /var/www/html/database/database.sqlite\n\
+fi\n\
+# Start Apache in foreground\n\
+exec apache2-foreground\n\
+' > /usr/local/bin/docker-entrypoint.sh && \
+chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Expose port 80
 EXPOSE 80
 
-# Start Apache
-CMD ["apache2-foreground"]
+# Start Apache using the entrypoint script
+CMD ["/usr/local/bin/docker-entrypoint.sh"]
