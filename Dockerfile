@@ -71,12 +71,6 @@ COPY docker/apache/000-default.conf /etc/apache2/sites-available/000-default.con
 # Generate application key
 RUN php artisan key:generate --force
 
-# Run database migrations
-RUN php artisan migrate --force
-
-# Run database seeding
-RUN php artisan db:seed --force
-
 # Clear all caches
 RUN php artisan config:clear && \
     php artisan cache:clear && \
