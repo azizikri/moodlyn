@@ -10,7 +10,7 @@
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <meta name="csrf_token" value="{{ csrf_token() }}" />
+    <meta name="csrf-token" value="{{ csrf_token() }}" />
 
 
     <!-- Fonts -->
