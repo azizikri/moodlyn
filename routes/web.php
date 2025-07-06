@@ -9,7 +9,9 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::view('dashboard', 'dashboard')
+Route::view('dashboard', 'dashboard', [
+    'randomQuote' => \App\Models\MotivationalQuote::getRandomQuote(),
+])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
