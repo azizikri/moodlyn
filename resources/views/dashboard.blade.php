@@ -33,18 +33,19 @@
         <div class="max-w-7xl mx-auto px-6 py-8">
             {{-- random quote --}}
             <div class="grid md:grid-cols-1 mb-8">
-                @if ($randomQuote)
-                    <div class="bg-white/70 rounded-2xl p-6 shadow-lg border border-[#E8C4A0] text-center">
-                        <div class="text-5xl mb-4">✨</div>
-                        <h3 class="text-2xl font-bold text-[#8B6F47] mb-2">Quote of the day</h3>
-                        <blockquote class="text-lg text-[#7A8471] mb-4 leading-relaxed italic">
-                            "{{ $randomQuote->quote }}"
-                        </blockquote>
-                        @if ($randomQuote->author)
-                            <p class="text-[#B5936B] font-medium mb-6">— {{ $randomQuote->author }}</p>
-                        @endif
-                    </div>
-                @endif
+                @php
+                    $randomQuote = \App\Models\MotivationalQuote::getRandomQuote();
+                @endphp
+                <div class="bg-white/70 rounded-2xl p-6 shadow-lg border border-[#E8C4A0] text-center">
+                    <div class="text-5xl mb-4">✨</div>
+                    <h3 class="text-2xl font-bold text-[#8B6F47] mb-2">Quote of the day</h3>
+                    <blockquote class="text-lg text-[#7A8471] mb-4 leading-relaxed italic">
+                        "{{ $randomQuote->quote }}"
+                    </blockquote>
+                    @if ($randomQuote->author)
+                        <p class="text-[#B5936B] font-medium mb-6">— {{ $randomQuote->author }}</p>
+                    @endif
+                </div>
             </div>
             <!-- Quick Stats -->
             <div class="grid md:grid-cols-3 gap-6 mb-8">

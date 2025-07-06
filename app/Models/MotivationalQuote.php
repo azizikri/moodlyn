@@ -25,7 +25,19 @@ class MotivationalQuote extends Model
      */
     public static function getRandomQuote()
     {
-        return self::where('is_active', true)->inRandomOrder()->first();
+        $quote = self::where('is_active', true)->inRandomOrder()->first();
+
+        // If no quotes exist, return a default one
+        if (! $quote) {
+            return (object) [
+                'quote' => 'Every day is a new beginning. Take a deep breath and start again.',
+                'author' => 'Unknown',
+                'category' => 'motivation',
+                'is_active' => true,
+            ];
+        }
+
+        return $quote;
     }
 
     /**

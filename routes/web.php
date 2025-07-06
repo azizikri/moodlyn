@@ -11,9 +11,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('dashboard', function () {
-    return view('dashboard', [
-        'randomQuote' => MotivationalQuote::getRandomQuote(),
-    ]);
+    return view('dashboard');
 })
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
