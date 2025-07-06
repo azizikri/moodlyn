@@ -10,9 +10,11 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::view('dashboard', 'dashboard', [
-    'randomQuote' => MotivationalQuote::getRandomQuote(),
-])
+Route::get('dashboard', function () {
+    return view('dashboard', [
+        'randomQuote' => MotivationalQuote::getRandomQuote(),
+    ]);
+})
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
