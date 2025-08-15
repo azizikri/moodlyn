@@ -49,7 +49,7 @@
                         <div class="hidden md:block">
                             <div class="flex items-center space-x-3">
                                 <span class="text-sm text-[#7A8471]">{{ auth()->user()->name }}</span>
-                                <div class="relative group">
+                                <div class="relative group" style="z-index: 1000;">
                                     <button
                                         class="flex items-center justify-center w-8 h-8 bg-[#B5936B] rounded-full text-white font-medium hover:bg-[#8B6F47] transition-colors">
                                         {{ auth()->user()->initials() }}
@@ -57,7 +57,7 @@
 
                                     <!-- Dropdown Menu -->
                                     <div
-                                        class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-[#E5D5C8] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                                        class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-[#E5D5C8] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[9999]">
                                         <div class="py-2">
                                             <div class="px-4 py-2 border-b border-[#E5D5C8]">
                                                 <p class="text-sm font-medium text-[#8B6F47]">
