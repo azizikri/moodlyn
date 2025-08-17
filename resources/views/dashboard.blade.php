@@ -1,6 +1,4 @@
 <x-layouts.app :title="__('Dashboard')">
-    <!-- Chart.js CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     
     <div class="min-h-screen bg-[#FAF7F3] grain-texture">
         <!-- Header -->
@@ -31,22 +29,6 @@
 
         <!-- Main Content -->
         <div class="max-w-7xl mx-auto px-6 py-8">
-            {{-- random quote --}}
-            <div class="grid md:grid-cols-1 mb-8">
-                @php
-                    $randomQuote = \App\Models\MotivationalQuote::getRandomQuote();
-                @endphp
-                <div class="bg-white/70 rounded-2xl p-6 shadow-lg border border-[#E8C4A0] text-center">
-                    <div class="text-5xl mb-4">✨</div>
-                    <h3 class="text-2xl font-bold text-[#8B6F47] mb-2">Quote of the day</h3>
-                    <blockquote class="text-lg text-[#7A8471] mb-4 leading-relaxed italic">
-                        "{{ $randomQuote->quote }}"
-                    </blockquote>
-                    @if ($randomQuote->author)
-                        <p class="text-[#B5936B] font-medium mb-6">— {{ $randomQuote->author }}</p>
-                    @endif
-                </div>
-            </div>
             <!-- Quick Stats -->
             <div class="grid md:grid-cols-3 gap-6 mb-8">
                 @php
@@ -257,14 +239,23 @@
         }
 
         // Data untuk Bar Chart - mood 7 hari terakhir
+        // Ubah query untuk menangani multiple entries per hari dengan LATEST entry
         $weeklyData = auth()->user()->moodEntries()
-            ->where('entry_date', '>=', now()->subDays(7))
-            ->selectRaw('DATE(entry_date) as date, mood, COUNT(*) as count')
-            ->groupBy('date', 'mood')
-            ->orderBy('date')
-            ->get();
+            ->where('entry_date', '>=', now()->subDays(6)->startOfDay())
+            ->orderBy('entry_date')
+            ->orderBy('created_at', 'desc') // Ambil yang terbaru jika ada multiple
+            ->get()
+            ->groupBy(function($entry) {
+                return $entry->entry_date->format('Y-m-d');
+            })
+            ->map(function($entries) {
+                return $entries->first(); // Ambil entry pertama (terbaru karena sudah di-order desc)
+            });
         
-        // Organize data untuk 7 hari terakhir
+        // Debug: lihat data yang diambil
+        // dd($weeklyData->toArray()); // Uncomment untuk debug
+        
+        // Organize data untuk 7 hari terakhir (termasuk hari ini)
         $days = [];
         $moodTypes = array_keys(\App\Models\MoodEntry::getMoodOptions());
         
@@ -274,13 +265,28 @@
             
             $days[$dayName] = [];
             foreach ($moodTypes as $mood) {
-                $days[$dayName][$mood] = $weeklyData
-                    ->where('date', $date)
-                    ->where('mood', $mood)
-                    ->sum('count');
+                // Cek apakah ada entry untuk tanggal dan mood ini
+                $hasEntry = $weeklyData->has($date) && $weeklyData[$date]->mood === $mood;
+                $days[$dayName][$mood] = $hasEntry ? 1 : 0;
             }
         }
     @endphp
+
+    <!-- DEBUG: Tampilkan data di halaman -->
+    <div style="background: #f0f0f0; padding: 10px; margin: 10px 0; font-family: monospace; font-size: 12px;">
+        <strong>DEBUG DATA:</strong><br>
+        <strong>Mood Data:</strong> {{ json_encode($moodData) }}<br>
+        <strong>Days Data:</strong> {{ json_encode($days) }}<br>
+        <strong>Today's Date:</strong> {{ now()->format('Y-m-d') }}<br>
+        <strong>Weekly Data Raw:</strong><br>
+        @foreach($weeklyData as $date => $entry)
+            Date: {{ $date }}, Mood: {{ $entry->mood }}, ID: {{ $entry->id }}, Cause: {{ $entry->cause ?? 'N/A' }}<br>
+        @endforeach
+        <strong>All Mood Entries for User:</strong><br>
+        @foreach(auth()->user()->moodEntries()->orderBy('entry_date')->orderBy('created_at')->get() as $entry)
+            ID: {{ $entry->id }}, Date: {{ $entry->entry_date->format('Y-m-d') }}, Mood: {{ $entry->mood }}, Created: {{ $entry->created_at }}<br>
+        @endforeach
+    </div>
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -330,69 +336,63 @@
             });
         }
 
-        // Bar Chart Configuration
+        // Bar Chart - YANG BENAR!
         const barCtx = document.getElementById('weeklyMoodChart');
         if (barCtx) {
-            const weeklyMoodChart = new Chart(barCtx, {
+            new Chart(barCtx, {
                 type: 'bar',
                 data: {
                     labels: Object.keys(weeklyMoodData),
                     datasets: [
                         {
-                            label: 'Very Happy',
-                            data: Object.values(weeklyMoodData).map(day => day['Very Happy'] || 0),
+                            label: 'Happy',
+                            data: Object.values(weeklyMoodData).map(day => day['Happy'] || 0),
                             backgroundColor: '#22C55E'
                         },
                         {
-                            label: 'Happy',
-                            data: Object.values(weeklyMoodData).map(day => day['Happy'] || 0),
-                            backgroundColor: '#84CC16'
-                        },
-                        {
-                            label: 'Neutral',
-                            data: Object.values(weeklyMoodData).map(day => day['Neutral'] || 0),
-                            backgroundColor: '#EAB308'
-                        },
-                        {
-                            label: 'Sad',
+                            label: 'Sad', 
                             data: Object.values(weeklyMoodData).map(day => day['Sad'] || 0),
+                            backgroundColor: '#EF4444'
+                        },
+                        {
+                            label: 'Anxious',
+                            data: Object.values(weeklyMoodData).map(day => day['Anxious'] || 0),
                             backgroundColor: '#F97316'
                         },
                         {
-                            label: 'Very Sad',
-                            data: Object.values(weeklyMoodData).map(day => day['Very Sad'] || 0),
-                            backgroundColor: '#EF4444'
+                            label: 'Calm',
+                            data: Object.values(weeklyMoodData).map(day => day['Calm'] || 0),
+                            backgroundColor: '#84CC16'
+                        },
+                        {
+                            label: 'Energetic',
+                            data: Object.values(weeklyMoodData).map(day => day['Energetic'] || 0),
+                            backgroundColor: '#FACC15'
+                        },
+                        {
+                            label: 'Angry',
+                            data: Object.values(weeklyMoodData).map(day => day['Angry'] || 0),
+                            backgroundColor: '#DC2626'
+                        },
+                        {
+                            label: 'Stressed',
+                            data: Object.values(weeklyMoodData).map(day => day['Stressed'] || 0),
+                            backgroundColor: '#9333EA'
+                        },
+                        {
+                            label: 'Grateful',
+                            data: Object.values(weeklyMoodData).map(day => day['Grateful'] || 0),
+                            backgroundColor: '#10B981'
                         }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                            labels: {
-                                color: '#8B6F47',
-                                font: {
-                                    size: 11
-                                }
-                            }
-                        }
-                    },
                     scales: {
-                        x: {
-                            stacked: true,
-                            ticks: {
-                                color: '#8B6F47'
-                            }
-                        },
                         y: {
-                            stacked: true,
-                            ticks: {
-                                color: '#8B6F47'
-                            },
-                            beginAtZero: true
+                            beginAtZero: true,
+                            max: 1
                         }
                     }
                 }
