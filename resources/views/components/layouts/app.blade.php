@@ -3,6 +3,7 @@
 
 <head>
     @include('partials.head')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body class="min-h-screen bg-[#FAF7F3] grain-texture text-[#4A453E] antialiased">
